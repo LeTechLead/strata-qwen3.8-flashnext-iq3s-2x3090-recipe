@@ -1,0 +1,13 @@
+Strata inference engine — © Niko1221 and the Strata contributors, MIT licensed.
+  Upstream: https://github.com/Niko1221/Strata (this recipe pins tag v0.1.27, commit a790805).
+  Fetched by scripts/fetch-strata.sh at build time; vendored in this repository nowhere.
+
+llama.cpp (ggml, gguf-py, mtmd) — © ggml-org contributors, MIT licensed.
+  Upstream: https://github.com/ggml-org/llama.cpp (pinned commit 3cf03257f219).
+
+The engine source, Docker build scripts, compose examples, benchmark scripts and README
+in this repository that are original to this recipe are MIT licensed (see LICENSE).
+
+Model weights are NOT part of this repository and carry their own terms:
+  Qwen3.8-Flash-Next — Qwen team; GSQ-RCO quantizations — ISTA-DASLab
+  (see https://huggingface.co/ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF).

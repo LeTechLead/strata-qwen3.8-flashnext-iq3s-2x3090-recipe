@@ -1,0 +1,26 @@
+# Compose file for the Strata IQ3_XXS service. Copy alongside a build of the Dockerfile.
+# Paths below are examples — adjust -v left-hand sides to your layout.
+services:
+  strata-flashnext-iq3xxs:
+    image: strata:0.1.27
+    container_name: strata-flashnext-iq3xxs
+    ports:
+      - "8080:8080"          # OpenAI /v1 + Anthropic /v1/messages on one port
+    volumes:
+      - ./models/qwen38-flashnext-gsq-iq3xxs:/models:ro
+      - ./data/packs:/packs
+      - ./data/mtp:/mtp
+      - ./config/iq3xxs.json:/config/iq3xxs.json:ro
+    command: >
+      python3 /app/strata/serve/server.py --engine strata
+      --config /config/iq3xxs.json --host 0.0.0.0 --port 8080
+    # IMPORTANT: no egress. Without network access the engine can never self-update
+    # from GitHub releases; it starts the build you compiled. (Offline: "network_mode: none"
+    # on podman, or run on an isolated compose network with no internet route.)
+    shm_size: "16gb"
+    restart: "no"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/health >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 3

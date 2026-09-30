@@ -1,0 +1,8 @@
+strata-src/
+models/
+data/
+config/iq3xxs.json
+*.gguf
+*.part
+*.log
+__pycache__/

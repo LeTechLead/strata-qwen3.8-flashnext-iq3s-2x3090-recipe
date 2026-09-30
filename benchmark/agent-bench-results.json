@@ -1,0 +1,197 @@
+{
+ "phase": {
+  "A": {
+   "ttft_s": 0.159,
+   "wall_s": 1.7,
+   "prompt_tokens": 25078,
+   "completion_tokens": 128,
+   "fresh_wall_s": 40.51,
+   "fresh_timings": {
+    "cache_n": 0,
+    "prompt_n": 25078,
+    "prompt_ms": 38939.3,
+    "prompt_per_token_ms": 1.553,
+    "prompt_per_second": 644.0,
+    "predicted_n": 128,
+    "predicted_ms": 1490.2,
+    "predicted_per_token_ms": 11.642,
+    "predicted_per_second": 85.9,
+    "draft_n": 96,
+    "draft_n_accepted": 75
+   },
+   "warm_ttft_s": 0.159,
+   "warm_wall_s": 1.7
+  },
+  "B": [
+   {
+    "run": 1,
+    "ttft_s": 0.159,
+    "wall_s": 1.65,
+    "cache_n": 25073,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 74.4,
+    "prompt_per_second": 67.2,
+    "predicted_per_second": 103.7,
+    "draft_n": 92,
+    "draft_n_accepted": 76
+   },
+   {
+    "run": 2,
+    "ttft_s": 0.157,
+    "wall_s": 1.58,
+    "cache_n": 25073,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 74.1,
+    "prompt_per_second": 67.5,
+    "predicted_per_second": 100.3,
+    "draft_n": 99,
+    "draft_n_accepted": 77
+   },
+   {
+    "run": 3,
+    "ttft_s": 0.157,
+    "wall_s": 1.74,
+    "cache_n": 25073,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 74.1,
+    "prompt_per_second": 67.5,
+    "predicted_per_second": 107.1,
+    "draft_n": 96,
+    "draft_n_accepted": 81
+   }
+  ],
+  "C": [
+   {
+    "turn": 1,
+    "ttft_s": 1.796,
+    "wall_s": 2.66,
+    "prompt_tokens_total": 509,
+    "cache_n": 504,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 73.5,
+    "decode_tok_s": 108.0
+   },
+   {
+    "turn": 2,
+    "ttft_s": 1.855,
+    "wall_s": 2.92,
+    "prompt_tokens_total": 950,
+    "cache_n": 945,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 73.4,
+    "decode_tok_s": 98.0
+   },
+   {
+    "turn": 3,
+    "ttft_s": 1.848,
+    "wall_s": 2.69,
+    "prompt_tokens_total": 1391,
+    "cache_n": 1386,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 73.0,
+    "decode_tok_s": 97.8
+   },
+   {
+    "turn": 4,
+    "ttft_s": 1.984,
+    "wall_s": 2.81,
+    "prompt_tokens_total": 1832,
+    "cache_n": 1827,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 73.7,
+    "decode_tok_s": 100.4
+   },
+   {
+    "turn": 5,
+    "ttft_s": 2.074,
+    "wall_s": 3.09,
+    "prompt_tokens_total": 2273,
+    "cache_n": 2268,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 74.0,
+    "decode_tok_s": 94.0
+   },
+   {
+    "turn": 6,
+    "ttft_s": 2.201,
+    "wall_s": 3.21,
+    "prompt_tokens_total": 2714,
+    "cache_n": 2709,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 74.1,
+    "decode_tok_s": 93.0
+   },
+   {
+    "turn": 7,
+    "ttft_s": 2.269,
+    "wall_s": 3.26,
+    "prompt_tokens_total": 3155,
+    "cache_n": 3150,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 74.4,
+    "decode_tok_s": 93.3
+   },
+   {
+    "turn": 8,
+    "ttft_s": 2.291,
+    "wall_s": 3.28,
+    "prompt_tokens_total": 3596,
+    "cache_n": 3591,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 74.4,
+    "decode_tok_s": 98.3
+   },
+   {
+    "turn": 9,
+    "ttft_s": 2.261,
+    "wall_s": 3.26,
+    "prompt_tokens_total": 4037,
+    "cache_n": 4032,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 74.6,
+    "decode_tok_s": 93.4
+   },
+   {
+    "turn": 10,
+    "ttft_s": 2.23,
+    "wall_s": 3.17,
+    "prompt_tokens_total": 4481,
+    "cache_n": 4476,
+    "prompt_n_recomputed": 5,
+    "prompt_ms": 74.6,
+    "decode_tok_s": 86.5
+   }
+  ],
+  "D_prose": {
+   "wall_s": 23.79,
+   "completion_tokens": 2048,
+   "ttft_s": 0.851,
+   "decode_tok_s": 95.0,
+   "draft_n": 1626,
+   "draft_n_accepted": 1294,
+   "accept_rate": 0.796
+  },
+  "D_code": {
+   "wall_s": 23.07,
+   "completion_tokens": 2048,
+   "ttft_s": 1.057,
+   "decode_tok_s": 87.7,
+   "draft_n": 1547,
+   "draft_n_accepted": 1187,
+   "accept_rate": 0.767
+  }
+ },
+ "engine_after": {
+  "now_free_mib": 647,
+  "hit_rate_last": 0.988,
+  "totals": {
+   "since": 1790778626.0746853,
+   "requests": 37,
+   "prompt_tokens": 251266,
+   "reused": 221078,
+   "output_tokens": 11641,
+   "prompt_ms": 65304.499999999985,
+   "decode_ms": 128259.29999999999
+  }
+ }
+}
