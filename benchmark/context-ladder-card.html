@@ -25,6 +25,7 @@ td:first-child{color:#fff;font-weight:600}
 code{display:block;background:#0d1420;border:1px solid #26314a;border-radius:10px;padding:16px 18px;font:14.5px/1.55 Consolas,monospace;color:#9ecbff;white-space:pre;overflow-x:auto}
 .foot{margin-top:30px;font-size:15px;color:#68758c;display:flex;justify-content:space-between}
 .note{font-size:14.5px;color:#7a8aa3;margin-top:8px}
+.note.tiny{font-size:12.5px;color:#5d6b83;margin-top:4px}
 </style></head><body><div class="wrap">
 <h1>Qwen3.8-Flash-Next IQ3_XXS — context ladder</h1>
 <div class="sub">llama-benchy · pp 4,096 / tg 512 · 3 runs per depth · unique requests, cache off</div>
@@ -38,6 +39,7 @@ code{display:block;background:#0d1420;border:1px solid #26314a;border-radius:10p
 <h2>Prefill — prompt-processing rate by depth</h2>
 <div class="hrow"><div class="hlab">8,192 tok</div><div class="htrack"><div class="hbar" style="width:54.3%"></div></div><div class="hval">1084 t/s</div></div><div class="hrow"><div class="hlab">32,768 tok</div><div class="htrack"><div class="hbar" style="width:82.3%"></div></div><div class="hval">1643 t/s</div></div><div class="hrow"><div class="hlab">65,536 tok</div><div class="htrack"><div class="hbar" style="width:95.6%"></div></div><div class="hval">1909 t/s</div></div><div class="hrow"><div class="hlab">126,208 tok</div><div class="htrack"><div class="hbar" style="width:100.0%"></div></div><div class="hval">1996 t/s</div></div>
 <div class="note">prefill rate = (depth + 4,096) ÷ total prefill time — all context present at first token</div>
+<div class="note tiny">why it rises: each fresh request pays a fixed ~5 s setup that amortizes over the depth — the per-token prefill cost stays flat at ~0.46 ms across all four rungs</div>
 
 <h2>Decode — generation rate by depth</h2>
 <div class="hrow"><div class="hlab">8,192 tok</div><div class="htrack"><div class="hbar t" style="width:100.0%"></div></div><div class="hval">97.7 t/s</div></div><div class="hrow"><div class="hlab">32,768 tok</div><div class="htrack"><div class="hbar t" style="width:99.2%"></div></div><div class="hval">96.9 t/s</div></div><div class="hrow"><div class="hlab">65,536 tok</div><div class="htrack"><div class="hbar t" style="width:94.2%"></div></div><div class="hval">92.0 t/s</div></div><div class="hrow"><div class="hlab">126,208 tok</div><div class="htrack"><div class="hbar t" style="width:88.2%"></div></div><div class="hval">86.1 t/s</div></div>
