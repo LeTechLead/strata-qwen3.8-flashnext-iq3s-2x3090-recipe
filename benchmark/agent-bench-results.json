@@ -1,197 +1,197 @@
 {
  "phase": {
   "A": {
-   "ttft_s": 0.159,
-   "wall_s": 1.7,
+   "ttft_s": 0.132,
+   "wall_s": 1.39,
    "prompt_tokens": 25078,
    "completion_tokens": 128,
-   "fresh_wall_s": 40.51,
+   "fresh_wall_s": 17.95,
    "fresh_timings": {
     "cache_n": 0,
     "prompt_n": 25078,
-    "prompt_ms": 38939.3,
-    "prompt_per_token_ms": 1.553,
-    "prompt_per_second": 644.0,
+    "prompt_ms": 16486.3,
+    "prompt_per_token_ms": 0.657,
+    "prompt_per_second": 1521.1,
     "predicted_n": 128,
-    "predicted_ms": 1490.2,
-    "predicted_per_token_ms": 11.642,
-    "predicted_per_second": 85.9,
-    "draft_n": 96,
-    "draft_n_accepted": 75
+    "predicted_ms": 1391.1,
+    "predicted_per_token_ms": 10.868,
+    "predicted_per_second": 92.0,
+    "draft_n": 95,
+    "draft_n_accepted": 73
    },
-   "warm_ttft_s": 0.159,
-   "warm_wall_s": 1.7
+   "warm_ttft_s": 0.132,
+   "warm_wall_s": 1.39
   },
   "B": [
    {
     "run": 1,
-    "ttft_s": 0.159,
-    "wall_s": 1.65,
+    "ttft_s": 0.13,
+    "wall_s": 1.49,
     "cache_n": 25073,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 74.4,
-    "prompt_per_second": 67.2,
-    "predicted_per_second": 103.7,
-    "draft_n": 92,
-    "draft_n_accepted": 76
+    "prompt_ms": 49.3,
+    "prompt_per_second": 101.4,
+    "predicted_per_second": 88.6,
+    "draft_n": 103,
+    "draft_n_accepted": 65
    },
    {
     "run": 2,
-    "ttft_s": 0.157,
-    "wall_s": 1.58,
+    "ttft_s": 0.13,
+    "wall_s": 1.4,
     "cache_n": 25073,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 74.1,
-    "prompt_per_second": 67.5,
-    "predicted_per_second": 100.3,
-    "draft_n": 99,
-    "draft_n_accepted": 77
+    "prompt_ms": 49.3,
+    "prompt_per_second": 101.4,
+    "predicted_per_second": 99.4,
+    "draft_n": 93,
+    "draft_n_accepted": 72
    },
    {
     "run": 3,
-    "ttft_s": 0.157,
-    "wall_s": 1.74,
+    "ttft_s": 0.133,
+    "wall_s": 1.46,
     "cache_n": 25073,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 74.1,
-    "prompt_per_second": 67.5,
-    "predicted_per_second": 107.1,
-    "draft_n": 96,
-    "draft_n_accepted": 81
+    "prompt_ms": 49.3,
+    "prompt_per_second": 101.4,
+    "predicted_per_second": 96.0,
+    "draft_n": 101,
+    "draft_n_accepted": 72
    }
   ],
   "C": [
    {
     "turn": 1,
-    "ttft_s": 1.796,
-    "wall_s": 2.66,
+    "ttft_s": 1.35,
+    "wall_s": 2.09,
     "prompt_tokens_total": 509,
     "cache_n": 504,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 73.5,
-    "decode_tok_s": 108.0
+    "prompt_ms": 48.3,
+    "decode_tok_s": 109.6
    },
    {
     "turn": 2,
-    "ttft_s": 1.855,
-    "wall_s": 2.92,
+    "ttft_s": 1.392,
+    "wall_s": 2.25,
     "prompt_tokens_total": 950,
     "cache_n": 945,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 73.4,
-    "decode_tok_s": 98.0
+    "prompt_ms": 48.5,
+    "decode_tok_s": 95.0
    },
    {
     "turn": 3,
-    "ttft_s": 1.848,
-    "wall_s": 2.69,
+    "ttft_s": 1.421,
+    "wall_s": 2.26,
     "prompt_tokens_total": 1391,
     "cache_n": 1386,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 73.0,
-    "decode_tok_s": 97.8
+    "prompt_ms": 48.7,
+    "decode_tok_s": 103.5
    },
    {
     "turn": 4,
-    "ttft_s": 1.984,
-    "wall_s": 2.81,
+    "ttft_s": 1.514,
+    "wall_s": 2.38,
     "prompt_tokens_total": 1832,
     "cache_n": 1827,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 73.7,
-    "decode_tok_s": 100.4
+    "prompt_ms": 48.8,
+    "decode_tok_s": 99.8
    },
    {
     "turn": 5,
-    "ttft_s": 2.074,
-    "wall_s": 3.09,
+    "ttft_s": 1.565,
+    "wall_s": 2.45,
     "prompt_tokens_total": 2273,
     "cache_n": 2268,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 74.0,
-    "decode_tok_s": 94.0
+    "prompt_ms": 49.2,
+    "decode_tok_s": 93.5
    },
    {
     "turn": 6,
-    "ttft_s": 2.201,
-    "wall_s": 3.21,
+    "ttft_s": 1.648,
+    "wall_s": 2.5,
     "prompt_tokens_total": 2714,
     "cache_n": 2709,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 74.1,
-    "decode_tok_s": 93.0
+    "prompt_ms": 49.5,
+    "decode_tok_s": 97.2
    },
    {
     "turn": 7,
-    "ttft_s": 2.269,
-    "wall_s": 3.26,
+    "ttft_s": 1.672,
+    "wall_s": 2.49,
     "prompt_tokens_total": 3155,
     "cache_n": 3150,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 74.4,
-    "decode_tok_s": 93.3
+    "prompt_ms": 49.3,
+    "decode_tok_s": 96.4
    },
    {
     "turn": 8,
-    "ttft_s": 2.291,
-    "wall_s": 3.28,
+    "ttft_s": 1.707,
+    "wall_s": 2.49,
     "prompt_tokens_total": 3596,
     "cache_n": 3591,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 74.4,
-    "decode_tok_s": 98.3
+    "prompt_ms": 49.5,
+    "decode_tok_s": 99.6
    },
    {
     "turn": 9,
-    "ttft_s": 2.261,
-    "wall_s": 3.26,
+    "ttft_s": 1.673,
+    "wall_s": 2.46,
     "prompt_tokens_total": 4037,
     "cache_n": 4032,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 74.6,
-    "decode_tok_s": 93.4
+    "prompt_ms": 49.5,
+    "decode_tok_s": 106.5
    },
    {
     "turn": 10,
-    "ttft_s": 2.23,
-    "wall_s": 3.17,
+    "ttft_s": 1.652,
+    "wall_s": 2.57,
     "prompt_tokens_total": 4481,
     "cache_n": 4476,
     "prompt_n_recomputed": 5,
-    "prompt_ms": 74.6,
-    "decode_tok_s": 86.5
+    "prompt_ms": 49.3,
+    "decode_tok_s": 87.4
    }
   ],
   "D_prose": {
-   "wall_s": 23.79,
+   "wall_s": 19.58,
    "completion_tokens": 2048,
-   "ttft_s": 0.851,
-   "decode_tok_s": 95.0,
-   "draft_n": 1626,
-   "draft_n_accepted": 1294,
-   "accept_rate": 0.796
+   "ttft_s": 0.71,
+   "decode_tok_s": 110.7,
+   "draft_n": 1581,
+   "draft_n_accepted": 1278,
+   "accept_rate": 0.808
   },
   "D_code": {
-   "wall_s": 23.07,
+   "wall_s": 20.83,
    "completion_tokens": 2048,
-   "ttft_s": 1.057,
-   "decode_tok_s": 87.7,
-   "draft_n": 1547,
-   "draft_n_accepted": 1187,
-   "accept_rate": 0.767
+   "ttft_s": 0.65,
+   "decode_tok_s": 98.4,
+   "draft_n": 1505,
+   "draft_n_accepted": 1110,
+   "accept_rate": 0.738
   }
  },
  "engine_after": {
-  "now_free_mib": 647,
-  "hit_rate_last": 0.988,
+  "now_free_mib": 463,
+  "hit_rate_last": 0.998,
   "totals": {
-   "since": 1790778626.0746853,
-   "requests": 37,
-   "prompt_tokens": 251266,
-   "reused": 221078,
-   "output_tokens": 11641,
-   "prompt_ms": 65304.499999999985,
-   "decode_ms": 128259.29999999999
+   "since": 1790803782.6392255,
+   "requests": 32,
+   "prompt_tokens": 250956,
+   "reused": 221029,
+   "output_tokens": 10816,
+   "prompt_ms": 34086.3,
+   "decode_ms": 105737.3
   }
  }
 }

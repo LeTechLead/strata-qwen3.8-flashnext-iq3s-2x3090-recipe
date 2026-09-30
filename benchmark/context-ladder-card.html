@@ -1,0 +1,65 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+body{width:1200px;background:#0b0f17;color:#e8edf6}
+.wrap{padding:44px 48px 36px}
+h1{font-size:40px;font-weight:800;letter-spacing:-.5px;color:#fff}
+.sub{font-size:19px;color:#8b98ad;margin-top:6px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.chip{font-size:15.5px;padding:7px 14px;border-radius:8px;background:#161d2b;border:1px solid #26314a;color:#b8c4d9}
+.chip b{color:#e8edf6;font-weight:600}
+.tiles{display:flex;gap:14px;margin-top:26px}
+.tile{flex:1;background:#121826;border:1px solid #26314a;border-radius:12px;padding:18px 20px}
+.tile .v{font-size:34px;font-weight:800;color:#4fc3f7}
+.tile .k{font-size:15px;color:#8b98ad;margin-top:4px}
+h2{font-size:22px;color:#fff;margin:34px 0 14px;font-weight:700}
+.hrow{display:flex;align-items:center;margin:9px 0}
+.hlab{width:230px;font-size:16px;color:#b8c4d9;text-align:right;padding-right:14px}
+.htrack{flex:1;background:#161d2b;border-radius:6px;height:30px;position:relative;overflow:hidden}
+.hbar{height:100%;border-radius:6px;background:linear-gradient(90deg,#1e88e5,#4fc3f7)}
+.hbar.t{background:linear-gradient(90deg,#f57f17,#ffb300)}
+.hval{width:96px;flex:none;text-align:left;font-size:15.5px;color:#e8edf6;padding-left:12px;line-height:30px}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:16px}
+th{text-align:left;color:#8b98ad;font-weight:600;padding:8px 10px;border-bottom:2px solid #26314a}
+td{padding:8px 10px;border-bottom:1px solid #1a2334;color:#dbe3f0}
+td:first-child{color:#fff;font-weight:600}
+code{display:block;background:#0d1420;border:1px solid #26314a;border-radius:10px;padding:16px 18px;font:14.5px/1.55 Consolas,monospace;color:#9ecbff;white-space:pre;overflow-x:auto}
+.foot{margin-top:30px;font-size:15px;color:#68758c;display:flex;justify-content:space-between}
+.note{font-size:14.5px;color:#7a8aa3;margin-top:8px}
+</style></head><body><div class="wrap">
+<h1>Qwen3.8-Flash-Next IQ3_XXS — context ladder</h1>
+<div class="sub">llama-benchy · pp 4,096 / tg 512 · 3 runs per depth · unique requests, cache off</div>
+<div class="chips"><span class="chip"><b>engine</b> Strata 0.1.30</span><span class="chip"><b>model</b> Qwen3.8-Flash-Next GSQ-RCO IQ3_XXS · 125B MoE</span><span class="chip"><b>GPUs</b> 2x RTX 3090 · layer split auto</span><span class="chip"><b>context</b> 131,072</span><span class="chip"><b>KV</b> int8</span><span class="chip"><b>spec</b> MTP draft 4 · min-p 0.5</span><span class="chip"><b>tokenizer</b> Qwen3.8-Flash-Next</span></div>
+<div class="tiles">
+<div class="tile"><div class="v" style="font-size:29px">1084→1996 t/s</div><div class="k">prefill rate, 8,192–126,208 tok</div></div>
+<div class="tile"><div class="v">+84.2%</div><div class="k">prefill change across the full 15x depth range</div></div>
+<div class="tile"><div class="v">97.7 t/s</div><div class="k">decode at 8,192 tok depth</div></div>
+<div class="tile"><div class="v">86.1 t/s</div><div class="k">decode at 126,208 tok depth</div></div></div>
+
+<h2>Prefill — prompt-processing rate by depth</h2>
+<div class="hrow"><div class="hlab">8,192 tok</div><div class="htrack"><div class="hbar" style="width:54.3%"></div></div><div class="hval">1084 t/s</div></div><div class="hrow"><div class="hlab">32,768 tok</div><div class="htrack"><div class="hbar" style="width:82.3%"></div></div><div class="hval">1643 t/s</div></div><div class="hrow"><div class="hlab">65,536 tok</div><div class="htrack"><div class="hbar" style="width:95.6%"></div></div><div class="hval">1909 t/s</div></div><div class="hrow"><div class="hlab">126,208 tok</div><div class="htrack"><div class="hbar" style="width:100.0%"></div></div><div class="hval">1996 t/s</div></div>
+<div class="note">prefill rate = (depth + 4,096) ÷ total prefill time — all context present at first token</div>
+
+<h2>Decode — generation rate by depth</h2>
+<div class="hrow"><div class="hlab">8,192 tok</div><div class="htrack"><div class="hbar t" style="width:100.0%"></div></div><div class="hval">97.7 t/s</div></div><div class="hrow"><div class="hlab">32,768 tok</div><div class="htrack"><div class="hbar t" style="width:99.2%"></div></div><div class="hval">96.9 t/s</div></div><div class="hrow"><div class="hlab">65,536 tok</div><div class="htrack"><div class="hbar t" style="width:94.2%"></div></div><div class="hval">92.0 t/s</div></div><div class="hrow"><div class="hlab">126,208 tok</div><div class="htrack"><div class="hbar t" style="width:88.2%"></div></div><div class="hval">86.1 t/s</div></div>
+<div class="note">mean of 3 runs · tg 512 tokens per run</div>
+
+<h2>Full results</h2>
+<table><tr><th>depth (tok)</th><th>prefill t/s</th><th>decode t/s</th><th>peak decode t/s</th><th>TTFT (s)</th><th>E2E (s)</th></tr>
+<tr><td>8,192</td><td>1084 ± 13</td><td>97.7 ± 6.7</td><td>133.7 ± 10.5</td><td>11.34</td><td>16.58</td></tr><tr><td>32,768</td><td>1643 ± 10</td><td>96.9 ± 2.5</td><td>118.3 ± 12.3</td><td>22.44</td><td>27.72</td></tr><tr><td>65,536</td><td>1909 ± 5</td><td>92.0 ± 2.2</td><td>113.7 ± 3.8</td><td>36.47</td><td>42.04</td></tr><tr><td>126,208</td><td>1996 ± 6</td><td>86.1 ± 4.0</td><td>108.0 ± 2.8</td><td>65.28</td><td>71.23</td></tr></table>
+<div class="note">TTFT = full prefill wall time · E2E = TTFT + 512 ÷ decode rate (derived)</div>
+
+<h2>Serving &amp; run</h2>
+<code>strata:0.1.30 · server.py --engine strata --config iq3xxs.json
+strata --pack packs/qwen3.8-flash-next \
+  --native Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf \
+  --ple-gguf Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00002-of-00002.gguf \
+  --expert-profile expert-profile.bin --expert-cache auto --prefill auto \
+  --spec 4 --spec-min-p 0.5 --mtp /mtp/rt \
+  --max-context 131072 --kv int8 --gpu 0,1 --layer-split auto
+
+llama-benchy --base-url &lt;endpoint&gt;/v1 --model qwen3.8-flash-next-iq3xxs \
+  --tokenizer Qwen/Qwen3.8-Flash-Next \
+  --pp 4096 --tg 512 --depth 8192 32768 65536 126208 \
+  --runs 3 --no-cache --skip-coherence</code>
+<div class="foot"><span>@LeTechLead</span><span>llama-benchy 0.3.5 · 3 runs per depth · 2026-09-30</span></div>
+</div></body></html>

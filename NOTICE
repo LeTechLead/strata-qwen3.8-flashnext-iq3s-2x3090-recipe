@@ -1,5 +1,5 @@
 Strata inference engine — © Niko1221 and the Strata contributors, MIT licensed.
-  Upstream: https://github.com/Niko1221/Strata (this recipe pins tag v0.1.27, commit a790805).
+  Upstream: https://github.com/Niko1221/Strata (this recipe pins tag v0.1.30, commit 30ec18e).
   Fetched by scripts/fetch-strata.sh at build time; vendored in this repository nowhere.
 
 llama.cpp (ggml, gguf-py, mtmd) — © ggml-org contributors, MIT licensed.
