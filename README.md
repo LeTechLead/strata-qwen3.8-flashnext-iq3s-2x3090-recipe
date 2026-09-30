@@ -45,8 +45,11 @@ docker compose up -d                               # healthcheck on /health
 Clients (any OpenAI SDK): base URL `http://<host>:8080/v1`, model name `qwen3.8-flash-next-iq3xxs`.
 Anthropic-style clients: `http://<host>:8080/v1/messages`.
 
-## What the benchmark card shows (`benchmark/`)
-`agent-shape-card.html` is the editable source of the PNG; raw per-request JSON is the artifact behind it.
+## Benchmark: agent-shape results (`benchmark/`)
+
+![Strata IQ3_XXS agent-shape benchmark — TTFT cliff, decode by phase, full results table](benchmark/strata-agentbench.png)
+
+`agent-shape-card.html` is the editable source of the PNG above; raw per-request JSON is the artifact behind it.
 Measured on server-side engine timings (not client estimates), the numbers that matter for coding agents:
 
 | scenario | result |
