@@ -25,45 +25,43 @@ td:first-child{color:#fff;font-weight:600}
 code{display:block;background:#0d1420;border:1px solid #26314a;border-radius:10px;padding:16px 18px;font:14.5px/1.55 Consolas,monospace;color:#9ecbff;white-space:pre;overflow-x:auto}
 .foot{margin-top:30px;font-size:15px;color:#68758c;display:flex;justify-content:space-between}
 .note{font-size:14.5px;color:#7a8aa3;margin-top:8px}
+.note.tiny{font-size:12.5px;color:#5d6b83;margin-top:4px}
 </style></head><body><div class="wrap">
-<h1>Strata IQ3_XXS — agent-shape benchmark</h1>
+<h1>Qwen3.8-Flash-Next IQ3_XXS — agent-shape latency</h1>
 <div class="sub">Qwen3.8-Flash-Next GSQ-RCO · prompt-checkpoint reuse, growing conversations, sustained code/prose decode</div>
-<div class="chips"><span class="chip"><b>engine</b> Strata 0.1.30 source-built</span><span class="chip"><b>model</b> IQ3_XXS 125B MoE</span><span class="chip"><b>GPUs</b> 2x RTX 3090 · layer split auto</span><span class="chip"><b>RAM</b> 40 GB expert arena pinned</span><span class="chip"><b>context</b> 131,072 · KV int8</span><span class="chip"><b>spec</b> MTP draft 4 · window 6</span><span class="chip"><b>temp</b> 0.2 code / 0.6 prose</span></div>
+<div class="chips"><span class="chip"><b>engine</b> Strata 0.1.36 source-built</span><span class="chip"><b>model</b> IQ3_XXS 125B MoE</span><span class="chip"><b>GPUs</b> 2x RTX 3090 · layer split auto</span><span class="chip"><b>RAM</b> 40 GB expert arena pinned</span><span class="chip"><b>context</b> 131,072 · KV int8</span><span class="chip"><b>spec</b> MTP draft 4 · window 6</span><span class="chip"><b>temp</b> 0.2 code / 0.6 prose</span></div>
 <div class="tiles">
-<div class="tile"><div class="v">0.132 s</div><div class="k">TTFT replaying a 25,078-token prompt</div></div>
-<div class="tile"><div class="v">94.7 t/s</div><div class="k">decode mean, warm replays</div></div>
-<div class="tile"><div class="v">88%</div><div class="k">of prompt tokens reused (221,029 of 250,956)</div></div>
-<div class="tile"><div class="v">99.8%</div><div class="k">GPU expert-cache hit rate</div></div></div>
+<div class="tile"><div class="v">0.124 s</div><div class="k">TTFT replaying a 22,284-token prompt</div></div>
+<div class="tile"><div class="v">112.2 t/s</div><div class="k">decode mean, warm replays</div></div>
+<div class="tile"><div class="v">83%</div><div class="k">of prompt tokens reused (158,738 of 191,076)</div></div>
+<div class="tile"><div class="v">99.6%</div><div class="k">GPU expert-cache hit rate</div></div>
+</div>
 
 <h2>Time to first token — the fresh-vs-warm cliff</h2>
-<div class="hrow"><div class="hlab">Fresh 25k prompt</div><div class="htrack"><div class="hbar t" style="width:85%"></div></div><div class="hval">16.49 s</div></div><div class="hrow"><div class="hlab">Replay same 25k</div><div class="htrack"><div class="hbar t" style="width:5%"></div></div><div class="hval">0.13 s</div></div><div class="hrow"><div class="hlab">Turn 1 (509 tok)</div><div class="htrack"><div class="hbar t" style="width:43%"></div></div><div class="hval">1.35 s</div></div><div class="hrow"><div class="hlab">Turn 10 (4,481 tok)</div><div class="htrack"><div class="hbar t" style="width:47%"></div></div><div class="hval">1.65 s</div></div>
-<div class="note">fresh = full prefill before first token (measured prompt_ms); log scale</div>
+<div class="hrow"><div class="hlab">Fresh 22k prompt</div><div class="htrack"><div class="hbar t" style="width:85.0%"></div></div><div class="hval">12.55 s</div></div><div class="hrow"><div class="hlab">Replay same 22k</div><div class="htrack"><div class="hbar t" style="width:5.0%"></div></div><div class="hval">0.12 s</div></div><div class="hrow"><div class="hlab">Turn 1 (515 tok)</div><div class="htrack"><div class="hbar t" style="width:43.6%"></div></div><div class="hval">1.15 s</div></div><div class="hrow"><div class="hlab">Turn 10 (4,773 tok)</div><div class="htrack"><div class="hbar t" style="width:48.2%"></div></div><div class="hval">1.50 s</div></div><div class="note">fresh = full prefill before first token (measured prompt_ms); log scale</div>
 
 <h2>Sustained decode by phase</h2>
-<div class="hrow"><div class="hlab">A fresh 25k</div><div class="htrack"><div class="hbar" style="width:83%"></div></div><div class="hval">92.0 t/s</div></div><div class="hrow"><div class="hlab">B replay x3</div><div class="htrack"><div class="hbar" style="width:86%"></div></div><div class="hval">94.7 t/s</div></div><div class="hrow"><div class="hlab">C 10 turns</div><div class="htrack"><div class="hbar" style="width:89%"></div></div><div class="hval">98.8 t/s</div></div><div class="hrow"><div class="hlab">D prose 2k</div><div class="htrack"><div class="hbar" style="width:100%"></div></div><div class="hval">110.7 t/s</div></div><div class="hrow"><div class="hlab">D code 2k</div><div class="htrack"><div class="hbar" style="width:89%"></div></div><div class="hval">98.4 t/s</div></div>
-
+<div class="hrow"><div class="hlab">A fresh 22k</div><div class="htrack"><div class="hbar" style="width:91.0%"></div></div><div class="hval">102.1 t/s</div></div><div class="hrow"><div class="hlab">B replay x3</div><div class="htrack"><div class="hbar" style="width:100.0%"></div></div><div class="hval">112.2 t/s</div></div><div class="hrow"><div class="hlab">C 10 turns</div><div class="htrack"><div class="hbar" style="width:88.4%"></div></div><div class="hval">99.2 t/s</div></div><div class="hrow"><div class="hlab">D prose 2k</div><div class="htrack"><div class="hbar" style="width:81.9%"></div></div><div class="hval">91.9 t/s</div></div><div class="hrow"><div class="hlab">D code 2k</div><div class="htrack"><div class="hbar" style="width:84.6%"></div></div><div class="hval">94.9 t/s</div></div>
 <h2>Full results</h2>
 <table><tr><th>phase</th><th>prompt tok</th><th>gen tok</th><th>TTFT s</th><th>decode t/s</th><th>draft accept %</th><th>E2E wall s</th></tr>
-<tr><td>A · fresh 25k code review</td><td>25,078</td><td>128</td><td>16.5</td><td>92.0</td><td>76.8</td><td>17.9</td></tr>
-<tr><td>B · replay 3x mean</td><td>25,078</td><td>128</td><td>0.13</td><td>94.7</td><td>70.6</td><td>1.45</td></tr>
-<tr><td>C · turn 1 of 10</td><td>509</td><td>80</td><td>1.35</td><td>109.6</td><td>—</td><td>2.09</td></tr>
-<tr><td>C · turn 10 of 10</td><td>4,481</td><td>80</td><td>1.65</td><td>87.4</td><td>—</td><td>2.57</td></tr>
-<tr><td>D · prose 2,048 tok</td><td>117</td><td>2,048</td><td>0.71</td><td>110.7</td><td>80.8</td><td>19.6</td></tr>
-<tr><td>D · code 2,048 tok</td><td>111</td><td>2,048</td><td>0.65</td><td>98.4</td><td>73.8</td><td>20.8</td></tr>
-</table>
+<tr><td>A · fresh 22,284 code review</td><td>22,284</td><td>128</td><td>12.5</td><td>102.1</td><td>70.4</td><td>13.9</td></tr>
+<tr><td>B · replay 3x mean</td><td>22,284</td><td>128</td><td>0.12</td><td>112.2</td><td>74.4</td><td>1.25</td></tr>
+<tr><td>C · turn 1 of 10</td><td>515</td><td>128</td><td>1.15</td><td>95.8</td><td>—</td><td>2.47</td></tr>
+<tr><td>C · turn 10 of 10</td><td>4,773</td><td>128</td><td>1.50</td><td>96.6</td><td>—</td><td>2.82</td></tr>
+<tr><td>D · prose 2,048 tok</td><td>79</td><td>2,048</td><td>0.56</td><td>91.9</td><td>68.6</td><td>22.8</td></tr>
+<tr><td>D · code 2,048 tok</td><td>95</td><td>2,048</td><td>0.53</td><td>94.9</td><td>68.7</td><td>22.1</td></tr>
 <div class="note">TTFT: fresh row = server prompt_ms, other rows = client stream-observed · E2E = measured wall seconds</div>
 
-<h2>C — 10-turn growing conversation (every turn reuses all but the 5 new tail tokens)</h2>
+<h2>C — 10-turn growing conversation (warm checkpoint; tail recompute)</h2>
 <table><tr><th>turn</th><th>prompt tok</th><th>reused</th><th>recomputed</th><th>TTFT s</th><th>decode t/s</th><th>wall s</th></tr>
-<tr><td>turn 1</td><td>509</td><td>504</td><td>5</td><td>1.35</td><td>109.6</td><td>2.09</td></tr><tr><td>turn 2</td><td>950</td><td>945</td><td>5</td><td>1.39</td><td>95.0</td><td>2.25</td></tr><tr><td>turn 3</td><td>1,391</td><td>1,386</td><td>5</td><td>1.42</td><td>103.5</td><td>2.26</td></tr><tr><td>turn 4</td><td>1,832</td><td>1,827</td><td>5</td><td>1.51</td><td>99.8</td><td>2.38</td></tr><tr><td>turn 5</td><td>2,273</td><td>2,268</td><td>5</td><td>1.56</td><td>93.5</td><td>2.45</td></tr><tr><td>turn 6</td><td>2,714</td><td>2,709</td><td>5</td><td>1.65</td><td>97.2</td><td>2.50</td></tr><tr><td>turn 7</td><td>3,155</td><td>3,150</td><td>5</td><td>1.67</td><td>96.4</td><td>2.49</td></tr><tr><td>turn 8</td><td>3,596</td><td>3,591</td><td>5</td><td>1.71</td><td>99.6</td><td>2.49</td></tr><tr><td>turn 9</td><td>4,037</td><td>4,032</td><td>5</td><td>1.67</td><td>106.5</td><td>2.46</td></tr><tr><td>turn 10</td><td>4,481</td><td>4,476</td><td>5</td><td>1.65</td><td>87.4</td><td>2.57</td></tr></table>
-
+<tr><td>turn 1</td><td>515</td><td>510</td><td>5</td><td>0.06</td><td>98.6</td><td>1.35</td></tr><tr><td>turn 2</td><td>988</td><td>983</td><td>5</td><td>0.07</td><td>101.8</td><td>1.31</td></tr><tr><td>turn 3</td><td>1,461</td><td>1,456</td><td>5</td><td>0.07</td><td>98.1</td><td>1.36</td></tr><tr><td>turn 4</td><td>1,934</td><td>1,929</td><td>5</td><td>0.07</td><td>111.6</td><td>1.20</td></tr><tr><td>turn 5</td><td>2,407</td><td>2,402</td><td>5</td><td>0.07</td><td>108.4</td><td>1.24</td></tr><tr><td>turn 6</td><td>2,880</td><td>2,875</td><td>5</td><td>0.07</td><td>91.4</td><td>1.46</td></tr><tr><td>turn 7</td><td>3,353</td><td>3,348</td><td>5</td><td>0.07</td><td>95.8</td><td>1.40</td></tr><tr><td>turn 8</td><td>3,826</td><td>3,821</td><td>5</td><td>0.08</td><td>86.0</td><td>1.55</td></tr><tr><td>turn 9</td><td>4,299</td><td>4,294</td><td>5</td><td>0.08</td><td>104.1</td><td>1.29</td></tr><tr><td>turn 10</td><td>4,773</td><td>4,768</td><td>5</td><td>0.08</td><td>96.0</td><td>1.40</td></tr></table>
 <h2>Serving</h2>
-<code>docker compose -f compose-strata.yml --profile strata-iq3xxs up -d
+<code>docker compose --profile strata-qwen38-flashnext-iq3xxs up -d
 python3 /app/strata/serve/server.py --engine strata --config iq3xxs.json
-strata --pack packs/qwen3.8-flash-next \
-  --native IQ3_XXS-00001-of-00002.gguf --ple-gguf ...-00002-of-00002.gguf \
-  --expert-profile data/expert-profile.bin --expert-cache auto \
-  --spec 4 --spec-min-p 0.5 --mtp /mtp/rt --max-context 131072 --kv int8 \
+strata --pack packs/qwen3.8-flash-next \\
+  --native IQ3_XXS-00001-of-00002.gguf --ple-gguf ...-00002-of-00002.gguf \\
+  --expert-profile data/expert-profile.bin --expert-cache auto \\
+  --spec 4 --spec-min-p 0.5 --mtp /mtp/rt --max-context 131072 --kv int8 \\
   --gpus 0,1 --layer-split auto</code>
-<div class="foot"><span>@LeTechLead</span><span>server-side engine timings · 2026-09-30</span></div>
+<div class="foot"><span>@LeTechLead</span><span>server-side engine timings · 2026-10-03</span></div>
 </div></body></html>

@@ -2,7 +2,7 @@
 # Paths below are examples — adjust -v left-hand sides to your layout.
 services:
   strata-flashnext-iq3xxs:
-    image: strata:0.1.30
+    image: strata:0.1.36
     container_name: strata-flashnext-iq3xxs
     ports:
       - "8080:8080"          # OpenAI /v1 + Anthropic /v1/messages on one port
