@@ -102,21 +102,6 @@ The cliff is still real and now shallower still: first turn on a new 22k context
 (0.1.30: ~16.5 s for 25k; 0.1.27: ~40 s); every turn that keeps its prefix costs ~0.12 s. Agents
 that reuse sessions feel this engine; agents that re-dump context pay for it every time.
 
-## Honest caveats (from reading the source, not the marketing)
-- **Self-update by design:** with network access, `setup.py` re-downloads the release binary at every
-  start if its version gate wants newer. The runtime container here has no egress, so the binary can
-  never change after build. Keep it that way unless you trust the upstream release stream.
-- **No checksums on model downloads** in their installer; `fetch-model.sh` adds verification against HF's
-  published LFS sha256s.
-- **Single sequence at a time** (FIFO). Parallel sub-agents queue, including against chat use.
-- **Pinned arena = one big load-time stall:** first load locks ~40 GB into RAM (~22 s at 4.2 GiB/s
-  on the 0.1.36 launch; theirs, not ours — the runs survived it fine).
-- IQ3_XXS at 262k context is **not** supported by this config (their own installer caps < 90 GB boxes at 128k;
-  deep-context prefill gets slower still and the KV is int8 here).
-- The engine moves fast (v0.1.30 -> v0.1.36 in three days) and is essentially one maintainer plus PRs.
-  The MIT license and the audited code are what make a pinned fork-in-a-container sane; none of it makes
-  it a drop-in for vLLM.
-
 ## Layout
 ```
 Dockerfile                     two-stage build (devel->compile -> runtime)
