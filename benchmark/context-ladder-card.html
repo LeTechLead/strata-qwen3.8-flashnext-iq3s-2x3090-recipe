@@ -16,52 +16,39 @@ h2{font-size:22px;color:#fff;margin:34px 0 14px;font-weight:700}
 .hlab{width:230px;font-size:16px;color:#b8c4d9;text-align:right;padding-right:14px}
 .htrack{flex:1;background:#161d2b;border-radius:6px;height:30px;position:relative;overflow:hidden}
 .hbar{height:100%;border-radius:6px;background:linear-gradient(90deg,#1e88e5,#4fc3f7)}
-.hbar.t{background:linear-gradient(90deg,#f57f17,#ffb300)}
-.hval{width:96px;flex:none;text-align:left;font-size:15.5px;color:#e8edf6;padding-left:12px;line-height:30px}
-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:16px}
-th{text-align:left;color:#8b98ad;font-weight:600;padding:8px 10px;border-bottom:2px solid #26314a}
-td{padding:8px 10px;border-bottom:1px solid #1a2334;color:#dbe3f0}
-td:first-child{color:#fff;font-weight:600}
-code{display:block;background:#0d1420;border:1px solid #26314a;border-radius:10px;padding:16px 18px;font:14.5px/1.55 Consolas,monospace;color:#9ecbff;white-space:pre;overflow-x:auto}
-.foot{margin-top:30px;font-size:15px;color:#68758c;display:flex;justify-content:space-between}
-.note{font-size:14.5px;color:#7a8aa3;margin-top:8px}
-.note.tiny{font-size:12.5px;color:#5d6b83;margin-top:4px}
+.hbar.dec{background:linear-gradient(90deg,#7e57c2,#b39ddb)}
+.hval{flex:none;width:96px;font-size:16px;font-weight:700;color:#e8edf6;padding-left:12px}
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:16px}
+th{color:#8b98ad;font-weight:600;text-align:right;padding:8px 10px;border-bottom:2px solid #26314a}
+th:first-child,td:first-child{text-align:left}
+td{padding:9px 10px;text-align:right;border-bottom:1px solid #1a2336;color:#e8edf6}
+td.dv{color:#4fc3f7;font-weight:600}
+.note{font-size:13.5px;color:#66788f;margin-top:10px}
+.cmd{background:#0d1320;border:1px solid #26314a;border-radius:10px;padding:16px 18px;margin-top:14px;font-family:Consolas,monospace;font-size:13px;color:#9fb3d1;white-space:pre;overflow-x:auto;line-height:1.55}
+.foot{display:flex;justify-content:space-between;margin-top:30px;font-size:15px;color:#66788f}
+.grid2{display:flex;gap:22px}
+.grid2>div{flex:1}
 </style></head><body><div class="wrap">
-<h1>Qwen3.8-Flash-Next IQ3_XXS — context ladder</h1>
-<div class="sub">llama-benchy · pp 4,096 / tg 512 · 3 runs per depth · unique requests, cache off</div>
-<div class="chips"><span class="chip"><b>engine</b> Strata 0.1.36</span><span class="chip"><b>model</b> Qwen3.8-Flash-Next GSQ-RCO IQ3_XXS · 125B MoE</span><span class="chip"><b>GPUs</b> 2x RTX 3090 · layer split auto</span><span class="chip"><b>context</b> 131,072</span><span class="chip"><b>KV</b> int8</span><span class="chip"><b>spec</b> MTP draft 4 · min-p 0.5</span><span class="chip"><b>tokenizer</b> Qwen3.8-Flash-Next</span></div>
-<div class="tiles">
-<div class="tile"><div class="v" style="font-size:29px">1,145→2,317 t/s</div><div class="k">prefill rate, 8,192–126,208 tok</div></div>
-<div class="tile"><div class="v">+102.4%</div><div class="k">prefill change across the full 15x depth range</div></div>
-<div class="tile"><div class="v">107.3 t/s</div><div class="k">decode at 8,192 tok depth</div></div>
-<div class="tile"><div class="v">93.9 t/s</div><div class="k">decode at 126,208 tok depth</div></div></div>
+<h1>Qwen3.8-Flash-Next IQ3_S — Strata</h1>
+<div class="sub">Context-depth ladder · prompt 4,096 / generate 512 · 3 runs per depth · cold cache</div>
+<div class="chips"><div class="chip">engine <b>0.1.40.1</b></div><div class="chip">quant <b>IQ3_S GSQ-RCO</b></div><div class="chip">KV <b>int8</b></div><div class="chip">spec <b>MTP draft 4</b></div><div class="chip">context <b>262,144</b></div><div class="chip">GPUs <b>2× RTX 3090</b></div><div class="chip">expert cache <b>33.1 GiB</b></div><div class="chip">pp / tg <b>4,096 / 512</b></div></div><div class="tiles"><div class="tile"><div class="v">113.1 tg t/s</div><div class="k">peak decode depth (8,192)</div></div><div class="tile"><div class="v">98.8 tg t/s</div><div class="k">decode at 257,280</div></div><div class="tile"><div class="v">1675 pp t/s</div><div class="k">best full-window prefill</div></div><div class="tile"><div class="v">162 s</div><div class="k">E2E at 257,280 (derived)</div></div></div>
+<h2>Decode throughput (tg, tok/s)</h2>
+<div class="hrow"><div class="hlab">8,192</div><div class="htrack"><div class="hbar dec" style="width:100.0%"></div></div><div class="hval">113.1</div></div><div class="hrow"><div class="hlab">32,768</div><div class="htrack"><div class="hbar dec" style="width:98.0%"></div></div><div class="hval">110.8</div></div><div class="hrow"><div class="hlab">65,536</div><div class="htrack"><div class="hbar dec" style="width:94.9%"></div></div><div class="hval">107.3</div></div><div class="hrow"><div class="hlab">126,208</div><div class="htrack"><div class="hbar dec" style="width:90.8%"></div></div><div class="hval">102.7</div></div><div class="hrow"><div class="hlab">196,608</div><div class="htrack"><div class="hbar dec" style="width:86.8%"></div></div><div class="hval">98.1</div></div><div class="hrow"><div class="hlab">257,280</div><div class="htrack"><div class="hbar dec" style="width:87.4%"></div></div><div class="hval">98.8</div></div><div class="note">mean of 3 runs · ±stdev in table · higher is better</div>
+<h2>Prefill throughput (full window, derived)</h2>
+<div class="hrow"><div class="hlab">8,192</div><div class="htrack"><div class="hbar" style="width:51.9%"></div></div><div class="hval">869</div></div><div class="hrow"><div class="hlab">32,768</div><div class="htrack"><div class="hbar" style="width:78.2%"></div></div><div class="hval">1310</div></div><div class="hrow"><div class="hlab">65,536</div><div class="htrack"><div class="hbar" style="width:89.8%"></div></div><div class="hval">1504</div></div><div class="hrow"><div class="hlab">126,208</div><div class="htrack"><div class="hbar" style="width:92.6%"></div></div><div class="hval">1551</div></div><div class="hrow"><div class="hlab">196,608</div><div class="htrack"><div class="hbar" style="width:100.0%"></div></div><div class="hval">1675</div></div><div class="hrow"><div class="hlab">257,280</div><div class="htrack"><div class="hbar" style="width:99.8%"></div></div><div class="hval">1671</div></div><div class="note">pp = (depth + 4,096) ÷ e2e time-to-final-token · average over the whole request, rises with depth as the warm prefix share grows · not a speedup AT depth</div>
+<h2>Full table</h2>
+<table><tr><th>depth</th><th>pp t/s</th><th>tg t/s</th><th>peak tg</th><th>TTFT s</th><th>E2E s</th></tr><tr><td>8,192</td><td class='dv'>869</td><td>113.1 ± 3.5</td><td>113.7</td><td>14.1</td><td class='dv'>18.7</td></tr><tr><td>32,768</td><td class='dv'>1310</td><td>110.8 ± 4.3</td><td>111.3</td><td>28.1</td><td class='dv'>32.8</td></tr><tr><td>65,536</td><td class='dv'>1504</td><td>107.3 ± 2.4</td><td>108.0</td><td>46.3</td><td class='dv'>51.1</td></tr><tr><td>126,208</td><td class='dv'>1551</td><td>102.7 ± 2.3</td><td>103.3</td><td>84.0</td><td class='dv'>89.0</td></tr><tr><td>196,608</td><td class='dv'>1675</td><td>98.1 ± 4.5</td><td>98.7</td><td>119.8</td><td class='dv'>125.1</td></tr><tr><td>257,280</td><td class='dv'>1671</td><td>98.8 ± 4.5</td><td>99.3</td><td>156.5</td><td class='dv'>161.6</td></tr></table>
+<div class="note">E2E = TTFT + 512 ÷ tg (derived) · TTFT = harness e2e time-to-final-token</div>
+<div class='cmd'>strata --serve --pack qwen3.8-flashnext-iq3s \
+  --native Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf \
+  --ple-gguf Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf \
+  --expert-profile expert-profile.bin --expert-cache auto --prefill auto \
+  --spec 4 --spec-min-p 0.5 --mtp /mtp/rt \
+  --max-context 262144 --kv int8 --layer-split auto
 
-<h2>Prefill — prompt-processing rate by depth</h2>
-<div class="hrow"><div class="hlab">8,192 tok</div><div class="htrack"><div class="hbar" style="width:49.4%"></div></div><div class="hval">1,145 t/s</div></div><div class="hrow"><div class="hlab">32,768 tok</div><div class="htrack"><div class="hbar" style="width:79.9%"></div></div><div class="hval">1,852 t/s</div></div><div class="hrow"><div class="hlab">65,536 tok</div><div class="htrack"><div class="hbar" style="width:94.6%"></div></div><div class="hval">2,192 t/s</div></div><div class="hrow"><div class="hlab">126,208 tok</div><div class="htrack"><div class="hbar" style="width:100.0%"></div></div><div class="hval">2,317 t/s</div></div>
-<div class="note">prefill rate = (depth + 4,096) ÷ total prefill time — all context present at first token</div>
-<div class="note tiny">why it rises: each fresh request pays a fixed 5.7 s setup that amortizes over the depth — the per-token prefill cost stays flat at ~0.39 ms across all four rungs</div>
-
-<h2>Decode — generation rate by depth</h2>
-<div class="hrow"><div class="hlab">8,192 tok</div><div class="htrack"><div class="hbar t" style="width:100.0%"></div></div><div class="hval">107.3 t/s</div></div><div class="hrow"><div class="hlab">32,768 tok</div><div class="htrack"><div class="hbar t" style="width:98.2%"></div></div><div class="hval">105.4 t/s</div></div><div class="hrow"><div class="hlab">65,536 tok</div><div class="htrack"><div class="hbar t" style="width:91.6%"></div></div><div class="hval">98.3 t/s</div></div><div class="hrow"><div class="hlab">126,208 tok</div><div class="htrack"><div class="hbar t" style="width:87.5%"></div></div><div class="hval">93.9 t/s</div></div>
-<div class="note">mean of 3 runs · tg 512 tokens per run</div>
-
-<h2>Full results</h2>
-<table><tr><th>depth (tok)</th><th>prefill t/s</th><th>decode t/s</th><th>peak decode t/s</th><th>TTFT (s)</th><th>E2E (s)</th></tr>
-<tr><td>8,192</td><td>1,145 ± 7</td><td>107.3 ± 6.7</td><td>108.0 ± 6.7</td><td>10.73</td><td>15.50</td></tr><tr><td>32,768</td><td>1,852 ± 2</td><td>105.4 ± 2.2</td><td>105.7 ± 2.0</td><td>19.91</td><td>24.76</td></tr><tr><td>65,536</td><td>2,192 ± 1</td><td>98.3 ± 9.1</td><td>99.0 ± 9.3</td><td>31.77</td><td>36.98</td></tr><tr><td>126,208</td><td>2,317 ± 1</td><td>93.9 ± 6.7</td><td>94.3 ± 6.9</td><td>56.23</td><td>61.68</td></tr></table>
-<div class="note">TTFT = full prefill wall time · E2E = TTFT + 512 ÷ decode rate (derived)</div>
-
-<h2>Serving &amp; run</h2>
-<code>strata:0.1.36 · server.py --engine strata --config iq3xxs.json
-strata --pack packs/qwen3.8-flash-next \\
-  --native Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf \\
-  --ple-gguf Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00002-of-00002.gguf \\
-  --expert-profile expert-profile.bin --expert-cache auto --prefill auto \\
-  --spec 4 --spec-min-p 0.5 --mtp /mtp/rt \\
-  --max-context 131072 --kv int8 --gpu 0,1 --layer-split auto
-
-llama-benchy --base-url &lt;endpoint&gt;/v1 --model qwen3.8-flash-next-iq3xxs \\
-  --tokenizer Qwen/Qwen3.8-Flash-Next \\
-  --pp 4096 --tg 512 --depth 8192 32768 65536 126208 \\
-  --runs 3 --no-cache --skip-coherence</code>
-<div class="foot"><span>@LeTechLead</span><span>llama-benchy 0.4.0 · 3 runs per depth · 2026-10-03</span></div>
+llama-benchy --base-url &lt;endpoint&gt;/v1 --model qwen3.8-flashnext-iq3s \
+  --tokenizer Qwen/Qwen3.8-Flash-Next \
+  --pp 4096 --tg 512 --depth 8192 32768 65536 126208 196608 257280 \
+  --runs 3 --no-cache --skip-coherence</div>
+<div class="foot"><span>@LeTechLead</span><span>llama-benchy 0.4.0 · 3 runs per depth · 2026-10-07</span></div>
 </div></body></html>

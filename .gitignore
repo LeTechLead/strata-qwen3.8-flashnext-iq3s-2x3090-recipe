@@ -1,7 +1,7 @@
 strata-src/
 models/
 data/
-config/iq3xxs.json
+config/iq3s.json
 *.gguf
 *.part
 *.log

@@ -1,7 +1,7 @@
-# Strata running Qwen3.8-Flash-Next IQ3_XXS on 2x RTX 3090 — a containerized recipe
+# Strata running Qwen3.8-Flash-Next IQ3_S on 2x RTX 3090 — a containerized recipe
 
-Runs [Strata](https://github.com/Niko1221/Strata) (v0.1.36, MIT) on the 125B MoE
-`Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS` GGUFs from [ISTA-DASLab](https://huggingface.co/ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF)
+Runs [Strata](https://github.com/Niko1221/Strata) (v0.1.40.1, MIT) on the 125B MoE
+`Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S` GGUFs from [ISTA-DASLab](https://huggingface.co/ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF)
 without ever executing Strata's own installer on your host: the engine is compiled inside Docker from
 the checksum-pinned upstream tag, the model files are fetched with sha256 verification, and the runtime
 container has **no network access at all** — which also means the engine can never self-update under you.
@@ -11,25 +11,33 @@ telemetry (I read it line by line before building this) — but it compiles on y
 pulls a CUDA toolkit onto your system, re-downloads its binary from GitHub releases at every start,
 and keeps its own venv and state outside your service manager. On a box that already serves other models,
 that's pollution. This recipe keeps only what the installer actually does that matters — compile the
-source, pack the GGUFs, launch the same two processes — and gives it an image and a compose file.
+source, pack the GGUF, launch the same two processes — and gives it an image and a compose file.
 
 ## What you get
 - OpenAI-compatible `POST /v1/chat/completions` and Anthropic-compatible `POST /v1/messages`,
   plus `GET /health`, `GET /metrics` (per-request reuse and hit-rate counters).
 - The engine's own flags work as upstream documents them: prompt-checkpoint reuse, MTP draft layer
-  (speculative decode), two-card layer split with a VRAM expert cache, 131,072-token context.
+  (speculative decode), two-card layer split with a VRAM expert cache, **262,144-token context** —
+  the IQ3_S shards' native trained window (`qwen4exp.context_length` in the GGUF metadata).
 
 ## Hardware floor (measured, this exact config)
-- 2x RTX 3090 (48 GB VRAM): engine loads dense weights + KV + a 21,710-slot expert cache ≈ 35 GiB across the pair; VRAM runs near-full (~460 MiB free — keep your other GPU services off).
-- ~62 GB system RAM: the 512-expert MoE arena (~40 GB) is pinned; the 28.8 GB n-gram table streams from SSD. With a serving stack resident, budget nothing else: it fits only when the box is mostly free (Strata's own docs call IQ3_XXS a "64 GB PC" size).
-- ~80 GB free disk for shards + pack + MTP (shard 2 is shared across all GSQ-RCO sizes — link it, don't refetch).
+- 2x RTX 3090 (48 GB VRAM): engine loads dense weights + KV + a 17,077-slot expert cache (33,085 MiB
+  across the pair); VRAM runs near-full (~460 MiB free — keep your other GPU services off).
+- ~62 GB system RAM: the 512-expert MoE arena (~48 GB, measured 47,962 MiB at load) is pinned; the rest
+  streams from SSD. With a serving stack resident, budget nothing else: it fits only when the box is
+  mostly free.
+- ~85 GB free disk for shards + pack + MTP (shard 2 is byte-identical across all GSQ-RCO sizes — link
+  it, don't refetch).
 - NVIDIA driver ≥ 580 (CUDA 13 runtime).
+- **Context ceiling:** 262,144 is hard. We probed above native: YaRN extrapolation steals VRAM from the
+  GPU expert cache — slots collapse (~17k → 3,812 at 2M), decode craters (~80 → 40 t/s), and past ~3M
+  the session allocation fails outright. Don't raise `--max-context`; the native window is the recipe.
 
 ## Steps
 ```bash
 # 0. build the engine image (fetches llama.cpp 3cf03257, verifies sha256)
-./scripts/fetch-strata.sh                       # repo @ tag v0.1.36 -> ./strata-src/
-docker build -t strata:0.1.36 .                 # ~15 min on a 12-core box
+./scripts/fetch-strata.sh                       # repo @ tag v0.1.40.1 -> ./strata-src/
+docker build -t strata:0.1.40.1 .               # ~15 min on a 12-core box
 
 # 1. model weights (resumable, sha256-verified against HuggingFace LFS oids)
 ./scripts/fetch-model.sh ./models
@@ -38,87 +46,91 @@ docker build -t strata:0.1.36 .                 # ~15 min on a 12-core box
 ./scripts/prepare-data.sh ./models ./data
 
 # 3. serve
-cp config/iq3xxs.json.example config/iq3xxs.json   # set api_key, port as you like
-docker compose up -d                               # healthcheck on /health
+cp config/iq3s.json.example config/iq3s.json    # set api_key, port as you like
+docker compose up -d                            # healthcheck on /health
 ```
 
-Clients (any OpenAI SDK): base URL `http://<host>:8080/v1`, model name `qwen3.8-flash-next-iq3xxs`.
+Clients (any OpenAI SDK): base URL `http://<host>:8080/v1`, model name `qwen3.8-flashnext-iq3s`.
 Anthropic-style clients: `http://<host>:8080/v1/messages`.
 
 ## Benchmark 1: context ladder (`benchmark/context-ladder.png`)
 
-llama-benchy 0.4.0 · pp 4,096 / tg 512 (exact-tg) · 3 runs per depth · unique requests (`--no-cache`) ·
-depths 8,192 / 32,768 / 65,536 / 126,208 (near-max: 131,072 − 4,096 − 512 − margin) ·
-tokenizer `Qwen/Qwen3.8-Flash-Next` · prefill rate = (depth + 4,096) ÷ full-prefill wall time ·
-engine restarted into a clean session before the published run.
+llama-benchy 0.4.0 · pp 4,096 / tg 512 · 3 runs per depth · unique requests (`--no-cache`) ·
+depths 8,192 → 257,280 (the top rung is 98% of the 262,144 window — the rungs above 126k only exist
+because IQ3_S serves native 262k) · tokenizer `Qwen/Qwen3.8-Flash-Next` ·
+prefill rate = (depth + 4,096) ÷ full-prefill wall time · engine restarted into a clean session.
 
 | depth | prefill t/s | decode t/s | peak decode | TTFT | E2E (est.) |
 |---|---|---|---|---|---|
-| 8,192 | 1,145 ± 7 | 107.3 ± 6.7 | 108.0 | 10.73 s | 15.50 s |
-| 32,768 | 1,852 ± 2 | 105.4 ± 2.2 | 105.7 | 19.91 s | 24.76 s |
-| 65,536 | 2,192 ± 1 | 98.3 ± 9.1 | 99.0 | 31.77 s | 36.98 s |
-| 126,208 | 2,317 ± 1 | 93.9 ± 6.7 | 94.3 | 56.23 s | 61.68 s |
+| 8,192 | 869 | 113.1 ± 3.6 | 113.7 | 14.1 s | 18.7 s |
+| 32,768 | 1,310 | 110.8 ± 4.3 | 111.3 | 28.1 s | 32.8 s |
+| 65,536 | 1,504 | 107.3 ± 2.4 | 108.0 | 46.3 s | 51.1 s |
+| 126,208 | 1,551 | 102.7 ± 2.3 | 103.3 | 84.0 s | 89.0 s |
+| 196,608 | 1,675 | 98.1 ± 4.5 | 98.7 | 119.8 s | 125.1 s |
+| 257,280 | 1,671 | 98.8 ± 4.5 | 99.3 | 156.5 s | 161.6 s |
 
-Raw benchy tables for all three engine versions measured on this box:
-`context-ladder-0.1.36.md` (above), `context-ladder-0.1.30.md`, `context-ladder-0.1.27.md` —
-same pack; the 0.1.27/0.1.30 tables were taken with llama-benchy 0.3.5, whose "peak decode" column
-measured warmup bursts, so the 0.1.36 peak column (≈ the tg mean) is not comparable to those two —
-use decode t/s for cross-version comparison. Against 0.1.30 (same protocol): prefill +5.6% at 8k to
-+16% at 126k (TTFT at 126k: 65.3 s → 56.2 s; the flat per-token prefill cost fell ~0.46 → ~0.39 ms),
-ladder decode +8–10%. 0.1.27 was flat ~660–678 t/s at every depth; 0.1.30's 1024-token
-expert-streaming prefill made deep prefill 2.4–3x faster. If you are upgrading from a 0.1.27 or
-0.1.30 pack: the pack format (`native experts v3`), the serve config keys, and the engine flags below
-are unchanged — rebuild the image, reuse `data/`.
+Raw benchy table: `context-ladder-0.1.40.1.md`. The first rungs' prefill is cold-window (CUDA graph
+capture); steady prefill is ~1,300–1,675 t/s. The headline is the deep half of the table: decode holds
+98–103 t/s from 126k to 257k — at 98% of native window the engine is still barely off its short-prompt
+speed.
+
+Against the IQ3_XXS predecessor (0.1.39, same protocol, 131k window): IQ3_S decode matches XXS within
+0–6% at every shared depth, but IQ3_S pays the prefill tax on this P2P-less pair (~3.3 GB/s PCIe expert
+stream): ~1,274–1,675 pp t/s vs XXS's 1,692–2,376, so E2E is +27–49% at matched depths. What the
+trade buys: twice the window (XXS caps at 131k on this box), unchanged deep decode, and a smarter
+3-bit point. Warm-agent metrics actually *improve* (replay TTFT 0.166 → 0.121 s, sustained prose
+97.1 → 105.6 t/s) — see `benchmark/` for both sides' raw artifacts.
+
+If you are upgrading from an older pinned build of this recipe (v0.1.30/v0.1.36/v0.1.39): the pack
+format (`native experts v3`), the serve config keys, and the engine flags are unchanged — rebuild the
+image, reuse `data/`. Only `--max-context` moves if you bump the quant.
 
 ## Benchmark 2: agent-shape results (`benchmark/`)
 
-![Strata IQ3_XXS agent-shape benchmark — TTFT cliff, decode by phase, full results table](benchmark/strata-agentbench.png)
+![Strata IQ3_S agent-shape benchmark — TTFT cliff, decode by phase, full results table](benchmark/strata-agentbench.png)
 
 `agent-shape-card.html` is the editable source of the PNG above; `agent-bench-results.json` is the raw
-per-request artifact behind it. Measured on v0.1.36 with server-side engine timings (not client
-estimates), engine restarted into a clean session, D re-run at the published temperatures
-(0.6 prose / 0.2 code), the numbers that matter for coding agents:
+per-request artifact behind it. Measured on v0.1.40.1 with server-side engine timings (not client
+estimates), engine restarted into a clean session, D at the published temperatures (0.6 prose /
+0.2 code), the numbers that matter for coding agents:
 
 | scenario | result |
 |---|---|
-| cold 22,284-token prompt prefill | 12.55 s (~1,776 t/s) |
-| same prompt replayed (checkpoint warm) | **0.12 s TTFT** — only 5 new tokens recompute |
-| warm decode | 99–112 t/s (B replay mean 112.2) |
-| sustained 2,048-token decode | prose 91.9 t/s / code 94.9 t/s |
-| MTP accept | prose 68.6% / code 68.7% on sustained runs; ~70–80% on short replays |
-| 10-turn growing conversation | every warm turn reused all-but-5 tokens; TTFT 0.064→0.077 s |
-| session-wide | 83% of prompt tokens reused; expert-cache hit 99.6% |
+| cold 22,284-token prompt prefill | 19.0 s (1,274 t/s) |
+| same prompt replayed (checkpoint warm) | **0.121 s TTFT** — only 5 new tokens recompute (45.8 ms prompt) |
+| warm decode | 110–126 t/s (B replay mean ~118) |
+| sustained 2,048-token decode | prose 105.6 t/s / code 107.5 t/s (temp-matched) |
+| MTP accept | prose 69% / code 66% on sustained runs; session-wide 67.4% |
+| 10-turn growing conversation | cold turns TTFT 2.0→2.7 s; replay pass 0.063→0.077 s/turn, decode ~106.6 t/s |
+| session-wide | 80.2% of prompt tokens reused (110,734 of 138,030); 0 aborts |
 
-Two honest notes against the v0.1.30 run: the prompt corpus here is a different ~22k-token code
-prompt (0.1.30's was 25,078 tokens), so compare the **marginal** prefill cost — 0.657 → 0.563
-ms/token, ~14% cheaper — not the absolute seconds. And sustained long generation regressed:
-0.1.30 measured 110.7 t/s at 80.8% draft accept on the same 2,048-token prose run; 0.1.36 gives
-91.9 t/s at 68.6%. Short agent turns are faster everywhere on the ladder and replay path;
-marathon decoding accepts fewer drafts — reproduced in a separate temp-matched pass, so not a
-sampling artifact. We measured it, we don't have a cause; upstream changed the verify/sampler path
-between 0.1.31 and 0.1.36.
+The cliff is the same physics as every quant: first turn on a new 22k context costs ~19 s; every turn
+that keeps its prefix costs ~0.12 s. Agents that reuse sessions feel this engine; agents that re-dump
+context pay the IQ3_S byte tax on every one.
 
-The cliff is still real and now shallower still: first turn on a new 22k context costs ~13 s
-(0.1.30: ~16.5 s for 25k; 0.1.27: ~40 s); every turn that keeps its prefix costs ~0.12 s. Agents
-that reuse sessions feel this engine; agents that re-dump context pay for it every time.
+Also measured, not carded: a custom agentic coding suite (8 shell-tool tasks × 3 passes, native
+function calling) at **22/24 = 91.7%**, and a Terminal-Bench 2.1 subset (8 expert-level tasks via the
+official Harbor harness) at **0/8** — reported honestly: the agent loop runs to the full turn budget
+without producing the required artifacts; zero infra errors, so it reads as task difficulty, not
+plumbing. Raw: `benchmark/cd-matched-results.json`.
 
 ## Layout
 ```
 Dockerfile                     two-stage build (devel->compile -> runtime)
-scripts/fetch-strata.sh        pinned repo tarball (tag v0.1.36) + sha256
-scripts/fetch-model.sh         IQ3_XXS shards + sha256 (shard 2 dedupe documented inline)
+scripts/fetch-strata.sh        pinned repo tarball (tag v0.1.40.1) + sha256
+scripts/fetch-model.sh         IQ3_S shards + sha256 (shard 2 dedupe documented inline)
 scripts/prepare-data.sh        pack + tokenizer + MTP range-fetch/pack/rt (inside the image)
-config/iq3xxs.json.example     server.py config (exe/args/gpu list = layer split)
+config/iq3s.json.example       server.py config (exe/args/gpu list = layer split)
 docker-compose.yml             service definition, no egress at runtime
 benchmark/                     both cards (PNG + HTML source) + raw artifacts
 NOTICE / LICENSE               provenance
 ```
-`strata-src/`, `models/`, `data/`, `config/iq3xxs.json` are gitignored — everything is reproducible via the scripts.
+`strata-src/`, `models/`, `data/`, `config/iq3s.json` are gitignored — everything is reproducible via the scripts.
 
 ## Provenance / licenses
-- Strata engine + server: © Niko1221 and contributors, MIT — https://github.com/Niko1221/Strata @ `v0.1.36` (commit `36fa455e`).
-- llama.cpp (ggml/gguf-py/mtmd) pinned at `3cf03257f219`, MIT (unchanged by Strata v0.1.28–v0.1.36; re-verified in v0.1.36's setup.py 2026-10-03).
-- Model weights: Qwen team + GSQ-RCO quants by ISTA-DASLab — see the HF repo's terms; you fetch them yourself.
+- Strata engine + server: © Niko1221 and the Strata contributors, MIT — https://github.com/Niko1221/Strata @ `v0.1.40.1` (commit `82f46a8c`, tarball sha256 `45e6ec0f41d96c77…`).
+- llama.cpp (ggml/gguf-py/mtmd) pinned at `3cf03257f219`, MIT (unchanged by Strata through v0.1.40.1; re-verified in v0.1.40.1's setup.py 2026-10-07).
+- Model weights: Qwen team + GSQ-RCO quants by ISTA-DASLab — see the HF repo's terms; you fetch them yourself. IQ3_S shard1 `4c1eb2ceb4915e11…` (54,817,524,224 B), shard2 `316b46f3a2dbd68c…` (28,800,138,432 B) — both match the HF LFS oids.
 - Scripts/Dockerfile/README in this repo: MIT.
 
 Recipe and benchmark: @LeTechLead

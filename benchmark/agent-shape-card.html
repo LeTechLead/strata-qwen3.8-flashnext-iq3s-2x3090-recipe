@@ -16,52 +16,29 @@ h2{font-size:22px;color:#fff;margin:34px 0 14px;font-weight:700}
 .hlab{width:230px;font-size:16px;color:#b8c4d9;text-align:right;padding-right:14px}
 .htrack{flex:1;background:#161d2b;border-radius:6px;height:30px;position:relative;overflow:hidden}
 .hbar{height:100%;border-radius:6px;background:linear-gradient(90deg,#1e88e5,#4fc3f7)}
-.hbar.t{background:linear-gradient(90deg,#f57f17,#ffb300)}
-.hval{width:96px;flex:none;text-align:left;font-size:15.5px;color:#e8edf6;padding-left:12px;line-height:30px}
-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:16px}
-th{text-align:left;color:#8b98ad;font-weight:600;padding:8px 10px;border-bottom:2px solid #26314a}
-td{padding:8px 10px;border-bottom:1px solid #1a2334;color:#dbe3f0}
-td:first-child{color:#fff;font-weight:600}
-code{display:block;background:#0d1420;border:1px solid #26314a;border-radius:10px;padding:16px 18px;font:14.5px/1.55 Consolas,monospace;color:#9ecbff;white-space:pre;overflow-x:auto}
-.foot{margin-top:30px;font-size:15px;color:#68758c;display:flex;justify-content:space-between}
-.note{font-size:14.5px;color:#7a8aa3;margin-top:8px}
-.note.tiny{font-size:12.5px;color:#5d6b83;margin-top:4px}
+.hbar.dec{background:linear-gradient(90deg,#7e57c2,#b39ddb)}
+.hval{flex:none;width:96px;font-size:16px;font-weight:700;color:#e8edf6;padding-left:12px}
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:16px}
+th{color:#8b98ad;font-weight:600;text-align:right;padding:8px 10px;border-bottom:2px solid #26314a}
+th:first-child,td:first-child{text-align:left}
+td{padding:9px 10px;text-align:right;border-bottom:1px solid #1a2336;color:#e8edf6}
+td.dv{color:#4fc3f7;font-weight:600}
+.note{font-size:13.5px;color:#66788f;margin-top:10px}
+.cmd{background:#0d1320;border:1px solid #26314a;border-radius:10px;padding:16px 18px;margin-top:14px;font-family:Consolas,monospace;font-size:13px;color:#9fb3d1;white-space:pre;overflow-x:auto;line-height:1.55}
+.foot{display:flex;justify-content:space-between;margin-top:30px;font-size:15px;color:#66788f}
+.grid2{display:flex;gap:22px}
+.grid2>div{flex:1}
 </style></head><body><div class="wrap">
-<h1>Qwen3.8-Flash-Next IQ3_XXS — agent-shape latency</h1>
-<div class="sub">Qwen3.8-Flash-Next GSQ-RCO · prompt-checkpoint reuse, growing conversations, sustained code/prose decode</div>
-<div class="chips"><span class="chip"><b>engine</b> Strata 0.1.36 source-built</span><span class="chip"><b>model</b> IQ3_XXS 125B MoE</span><span class="chip"><b>GPUs</b> 2x RTX 3090 · layer split auto</span><span class="chip"><b>RAM</b> 40 GB expert arena pinned</span><span class="chip"><b>context</b> 131,072 · KV int8</span><span class="chip"><b>spec</b> MTP draft 4 · window 6</span><span class="chip"><b>temp</b> 0.2 code / 0.6 prose</span></div>
-<div class="tiles">
-<div class="tile"><div class="v">0.124 s</div><div class="k">TTFT replaying a 22,284-token prompt</div></div>
-<div class="tile"><div class="v">112.2 t/s</div><div class="k">decode mean, warm replays</div></div>
-<div class="tile"><div class="v">83%</div><div class="k">of prompt tokens reused (158,738 of 191,076)</div></div>
-<div class="tile"><div class="v">99.6%</div><div class="k">GPU expert-cache hit rate</div></div>
-</div>
-
-<h2>Time to first token — the fresh-vs-warm cliff</h2>
-<div class="hrow"><div class="hlab">Fresh 22k prompt</div><div class="htrack"><div class="hbar t" style="width:85.0%"></div></div><div class="hval">12.55 s</div></div><div class="hrow"><div class="hlab">Replay same 22k</div><div class="htrack"><div class="hbar t" style="width:5.0%"></div></div><div class="hval">0.12 s</div></div><div class="hrow"><div class="hlab">Turn 1 (515 tok)</div><div class="htrack"><div class="hbar t" style="width:43.6%"></div></div><div class="hval">1.15 s</div></div><div class="hrow"><div class="hlab">Turn 10 (4,773 tok)</div><div class="htrack"><div class="hbar t" style="width:48.2%"></div></div><div class="hval">1.50 s</div></div><div class="note">fresh = full prefill before first token (measured prompt_ms); log scale</div>
-
-<h2>Sustained decode by phase</h2>
-<div class="hrow"><div class="hlab">A fresh 22k</div><div class="htrack"><div class="hbar" style="width:91.0%"></div></div><div class="hval">102.1 t/s</div></div><div class="hrow"><div class="hlab">B replay x3</div><div class="htrack"><div class="hbar" style="width:100.0%"></div></div><div class="hval">112.2 t/s</div></div><div class="hrow"><div class="hlab">C 10 turns</div><div class="htrack"><div class="hbar" style="width:88.4%"></div></div><div class="hval">99.2 t/s</div></div><div class="hrow"><div class="hlab">D prose 2k</div><div class="htrack"><div class="hbar" style="width:81.9%"></div></div><div class="hval">91.9 t/s</div></div><div class="hrow"><div class="hlab">D code 2k</div><div class="htrack"><div class="hbar" style="width:84.6%"></div></div><div class="hval">94.9 t/s</div></div>
-<h2>Full results</h2>
-<table><tr><th>phase</th><th>prompt tok</th><th>gen tok</th><th>TTFT s</th><th>decode t/s</th><th>draft accept %</th><th>E2E wall s</th></tr>
-<tr><td>A · fresh 22,284 code review</td><td>22,284</td><td>128</td><td>12.5</td><td>102.1</td><td>70.4</td><td>13.9</td></tr>
-<tr><td>B · replay 3x mean</td><td>22,284</td><td>128</td><td>0.12</td><td>112.2</td><td>74.4</td><td>1.25</td></tr>
-<tr><td>C · turn 1 of 10</td><td>515</td><td>128</td><td>1.15</td><td>95.8</td><td>—</td><td>2.47</td></tr>
-<tr><td>C · turn 10 of 10</td><td>4,773</td><td>128</td><td>1.50</td><td>96.6</td><td>—</td><td>2.82</td></tr>
-<tr><td>D · prose 2,048 tok</td><td>79</td><td>2,048</td><td>0.56</td><td>91.9</td><td>68.6</td><td>22.8</td></tr>
-<tr><td>D · code 2,048 tok</td><td>95</td><td>2,048</td><td>0.53</td><td>94.9</td><td>68.7</td><td>22.1</td></tr>
-<div class="note">TTFT: fresh row = server prompt_ms, other rows = client stream-observed · E2E = measured wall seconds</div>
-
-<h2>C — 10-turn growing conversation (warm checkpoint; tail recompute)</h2>
-<table><tr><th>turn</th><th>prompt tok</th><th>reused</th><th>recomputed</th><th>TTFT s</th><th>decode t/s</th><th>wall s</th></tr>
-<tr><td>turn 1</td><td>515</td><td>510</td><td>5</td><td>0.06</td><td>98.6</td><td>1.35</td></tr><tr><td>turn 2</td><td>988</td><td>983</td><td>5</td><td>0.07</td><td>101.8</td><td>1.31</td></tr><tr><td>turn 3</td><td>1,461</td><td>1,456</td><td>5</td><td>0.07</td><td>98.1</td><td>1.36</td></tr><tr><td>turn 4</td><td>1,934</td><td>1,929</td><td>5</td><td>0.07</td><td>111.6</td><td>1.20</td></tr><tr><td>turn 5</td><td>2,407</td><td>2,402</td><td>5</td><td>0.07</td><td>108.4</td><td>1.24</td></tr><tr><td>turn 6</td><td>2,880</td><td>2,875</td><td>5</td><td>0.07</td><td>91.4</td><td>1.46</td></tr><tr><td>turn 7</td><td>3,353</td><td>3,348</td><td>5</td><td>0.07</td><td>95.8</td><td>1.40</td></tr><tr><td>turn 8</td><td>3,826</td><td>3,821</td><td>5</td><td>0.08</td><td>86.0</td><td>1.55</td></tr><tr><td>turn 9</td><td>4,299</td><td>4,294</td><td>5</td><td>0.08</td><td>104.1</td><td>1.29</td></tr><tr><td>turn 10</td><td>4,773</td><td>4,768</td><td>5</td><td>0.08</td><td>96.0</td><td>1.40</td></tr></table>
-<h2>Serving</h2>
-<code>docker compose --profile strata-qwen38-flashnext-iq3xxs up -d
-python3 /app/strata/serve/server.py --engine strata --config iq3xxs.json
-strata --pack packs/qwen3.8-flash-next \\
-  --native IQ3_XXS-00001-of-00002.gguf --ple-gguf ...-00002-of-00002.gguf \\
-  --expert-profile data/expert-profile.bin --expert-cache auto \\
-  --spec 4 --spec-min-p 0.5 --mtp /mtp/rt --max-context 131072 --kv int8 \\
-  --gpus 0,1 --layer-split auto</code>
-<div class="foot"><span>@LeTechLead</span><span>server-side engine timings · 2026-10-03</span></div>
+<h1>IQ3_S on Strata — agent / coding shape</h1>
+<div class="sub">Fresh 22k prefill · checkpoint replay · 10-turn tool cadence · sustained generation</div>
+<div class="chips"><div class="chip">engine <b>0.1.40.1</b></div><div class="chip">model <b>qwen3.8-flashnext-iq3s</b></div><div class="chip">quant <b>IQ3_S</b></div><div class="chip">context <b>262,144</b></div><div class="chip">temp <b>0.6 prose / 0.2 code</b></div><div class="chip">timings <b>server-side</b></div></div><div class="tiles"><div class="tile"><div class="v">1,274</div><div class="k">pp t/s · fresh 22k-tok prompt</div></div><div class="tile"><div class="v">0.12 s</div><div class="k">A warm replay TTFT · checkpoint hit</div></div><div class="tile"><div class="v">106 t/s</div><div class="k">sustained prose decode</div></div><div class="tile"><div class="v">108 t/s</div><div class="k">sustained code decode</div></div></div>
+<h2>A · fresh vs replayed 22,284-token code prompt</h2>
+<div class="hrow"><div class="hlab">fresh (cold prefill)</div><div class="htrack"><div class="hbar" style="width:100.0%"></div></div><div class="hval">1,274</div></div><div class="hrow"><div class="hlab">replay (5 tok recomputed)</div><div class="htrack"><div class="hbar" style="width:100.0%"></div></div><div class="hval">486,550</div></div><div class="note">replay recomputes only the tail: 22,279 of 22,284 tokens checkpoint-hit · replay bar = derived (full prompt ÷ recompute time), not an engine-measured rate</div>
+<h2>C · 10-turn growing conversation, per-turn TTFT (s)</h2>
+<div class="grid2"><div><div class="hrow"><div class="hlab">turn 1 · 515 tok</div><div class="htrack"><div class="hbar" style="width:71.3%"></div></div><div class="hval">2.00</div></div><div class="hrow"><div class="hlab">turn 5 · 2,407 tok</div><div class="htrack"><div class="hbar" style="width:91.4%"></div></div><div class="hval">2.57</div></div><div class="hrow"><div class="hlab">turn 10 · 4,773 tok</div><div class="htrack"><div class="hbar" style="width:95.9%"></div></div><div class="hval">2.70</div></div></div><div><div class="hrow"><div class="hlab">turn 1 (replay)</div><div class="htrack"><div class="hbar dec" style="width:76.8%"></div></div><div class="hval">0.06</div></div><div class="hrow"><div class="hlab">turn 5 (replay)</div><div class="htrack"><div class="hbar dec" style="width:87.8%"></div></div><div class="hval">0.07</div></div><div class="hrow"><div class="hlab">turn 10 (replay)</div><div class="htrack"><div class="hbar dec" style="width:93.9%"></div></div><div class="hval">0.08</div></div></div></div><div class="note">left: cold pass (each turn re-enters at first byte) · right: replay pass (history prefix cached, only the appended ~400-token tail recomputed)</div>
+<h2>D · sustained 2,048-token generation</h2>
+<div class="hrow"><div class="hlab">prose (temp 0.6)</div><div class="htrack"><div class="hbar dec" style="width:98.2%"></div></div><div class="hval">105.6</div></div><div class="hrow"><div class="hlab">code (temp 0.2)</div><div class="htrack"><div class="hbar dec" style="width:100.0%"></div></div><div class="hval">107.5</div></div><div class="note">draft acceptance: prose 936/1,358 (69%) · code 986/1,493 (66%)</div>
+<h2>Full numbers</h2>
+<table><tr><th>metric</th><th>A fresh</th><th>A warm</th><th>C cold t10</th><th>C replay t10</th><th>D prose</th><th>D code</th></tr><tr><td>TTFT (s)</td><td>17.5</td><td>0.12</td><td>2.70</td><td>0.077</td><td>0.96</td><td>0.88</td></tr><tr><td>decode (t/s)</td><td>83.1</td><td>117.7</td><td>103.4</td><td>100.1</td><td>105.6</td><td>107.5</td></tr><tr><td>wall (s)</td><td>19.0</td><td>1.05</td><td>3.92</td><td>1.34</td><td>20.3</td><td>19.9</td></tr></table>
+<div class="foot"><span>@LeTechLead</span><span>server-side engine timings · 2026-10-07</span></div>
 </div></body></html>

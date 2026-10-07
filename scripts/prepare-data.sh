@@ -7,19 +7,19 @@
 # needs read access to huggingface.co. Nothing writes outside the data dir you pass.
 #
 # usage: ./scripts/prepare-data.sh <models-dir> <data-dir>
-#   models-dir holds the two verified IQ3_XXS shards (see fetch-model.sh)
+#   models-dir holds the two verified IQ3_S shards (see fetch-model.sh)
 set -euo pipefail
 MODELS="$(realpath "${1:?models dir}")"
 DATA="$(realpath "${2:?data dir}")"
-IMAGE="${IMAGE:-strata:0.1.36}"
-S1="$MODELS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf"
+IMAGE="${IMAGE:-strata:0.1.40.1}"
+S1="$MODELS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf"
 mkdir -p "$DATA/packs" "$DATA/mtp"
 
 echo '== pack (experts read from GGUF at start; dense.bin + index + tokenizer) =='
 docker run --rm --network none \
   -v "$MODELS":/models:ro -v "$DATA/packs":/packs --entrypoint sh "$IMAGE" -c '
-PYTHONPATH=/app/gguf-py python3 /app/strata/tools/iq_pack.py --gguf /models/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf --out /packs/qwen3.8-flash-next &&
-PYTHONPATH=/app/gguf-py python3 /app/strata/tools/strata_tokenizer.py --gguf /models/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf --out /packs/qwen3.8-flash-next'
+PYTHONPATH=/app/gguf-py python3 /app/strata/tools/iq_pack.py --gguf /models/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf --out /packs/qwen3.8-flash-next-iq3s &&
+PYTHONPATH=/app/gguf-py python3 /app/strata/tools/strata_tokenizer.py --gguf /models/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf --out /packs/qwen3.8-flash-next-iq3s'
 
 echo '== MTP draft layer: range-fetch from the original BF16 checkpoint (the only step needing HF) =='
 docker run --rm \
@@ -34,4 +34,4 @@ python3 /app/strata/tools/mtp_pack.py --src /mtp --experts q2_0 --out /mtp/mtp-q
 python3 /app/strata/tools/mtp_rt.py --gguf /mtp/mtp-q2_0.gguf --out /mtp/rt &&
 cp /app/strata/data/draft_vocab.bin /mtp/rt/draft_vocab.bin'
 
-echo "data ready: $DATA/packs/qwen3.8-flash-next and $DATA/mtp/rt"
+echo "data ready: $DATA/packs/qwen3.8-flash-next-iq3s and $DATA/mtp/rt"
