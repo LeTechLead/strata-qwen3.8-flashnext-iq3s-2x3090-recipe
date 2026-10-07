@@ -55,6 +55,8 @@ Anthropic-style clients: `http://<host>:8080/v1/messages`.
 
 ## Benchmark 1: context ladder (`benchmark/context-ladder.png`)
 
+![Strata IQ3_S context ladder — prefill, decode and TTFT across 8k to 257k depth](benchmark/context-ladder.png)
+
 llama-benchy 0.4.0 · pp 4,096 / tg 512 · 3 runs per depth · unique requests (`--no-cache`) ·
 depths 8,192 → 257,280 (the top rung is 98% of the 262,144 window — the rungs above 126k only exist
 because IQ3_S serves native 262k) · tokenizer `Qwen/Qwen3.8-Flash-Next` ·
