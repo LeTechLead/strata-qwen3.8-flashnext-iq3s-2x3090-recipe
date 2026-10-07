@@ -11,7 +11,7 @@
 set -euo pipefail
 MODELS="$(realpath "${1:?models dir}")"
 DATA="$(realpath "${2:?data dir}")"
-IMAGE="${IMAGE:-strata:0.1.40.1}"
+IMAGE="${IMAGE:-strata:0.1.40.2}"
 S1="$MODELS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf"
 mkdir -p "$DATA/packs" "$DATA/mtp"
 

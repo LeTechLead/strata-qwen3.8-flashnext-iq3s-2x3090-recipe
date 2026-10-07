@@ -1,14 +1,14 @@
-# Strata engine 0.1.40.1 (https://github.com/Niko1221/Strata, MIT — see NOTICE), source-built, no installer.
+# Strata engine 0.1.40.2 (https://github.com/Niko1221/Strata, MIT — see NOTICE), source-built, no installer.
 # Strata's own setup.py never ships a prebuilt Linux engine — it compiles the checked-in source against
 # llama.cpp pinned at 3cf03257f219 (for ggml, gguf-py and mtmd). This file does the same, but with
 # checksum-verified downloads at build time and NO network access in the runtime image: the engine can
 # never self-update after build.
 #
 # Prerequisite (fetch once before building):
-#   ./scripts/fetch-strata.sh          # repo @ tag v0.1.40.1 into ./strata-src/
+#   ./scripts/fetch-strata.sh          # repo @ tag v0.1.40.2 into ./strata-src/
 #
 # Build:
-#   docker build -t strata:0.1.40.1 .
+#   docker build -t strata:0.1.40.2 .
 # (set --build-arg CUDA_ARCHS=120 etc. for other cards; 86 = RTX 3090)
 
 FROM nvidia/cuda:13.3.1-devel-ubuntu24.04 AS builder
@@ -35,6 +35,7 @@ RUN cmake -B build -G Ninja \
 RUN cmake -B build-vision /src/strata/tools/vision -G Ninja \
       -DLLAMA_DIR=/src/llama.cpp \
       -DSTRATA_VISION_CUDA=ON \
+      -DSTRATA_PORTABLE=OFF \
       -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCHS}" \
     && cmake --build build-vision --target strata-vision -j"$(nproc)"
 
@@ -50,5 +51,5 @@ COPY --from=builder /src/strata/build-vision/bin/strata-vision* /app/engine/
 # gguf-py (pure python) so the pack tools can run inside this image
 COPY --from=builder /src/llama.cpp/gguf-py /app/gguf-py
 # stamp the engine as source-built (the format Strata's own setup writes; server.py reads it for version)
-RUN printf '{\n "source": "local",\n "version": "0.1.40.1",\n "archs": [86],\n "vision": "gpu"\n}\n' > /app/engine/BUILD.json
+RUN printf '{\n "source": "local",\n "version": "0.1.40.2",\n "archs": [86],\n "vision": "gpu"\n}\n' > /app/engine/BUILD.json
 EXPOSE 8080

@@ -2,7 +2,7 @@
 # Paths below are examples — adjust -v left-hand sides to your layout.
 services:
   strata-flashnext-iq3s:
-    image: strata:0.1.40.1
+    image: strata:0.1.40.2
     container_name: strata-flashnext-iq3s
     gpus: all
     ports:
