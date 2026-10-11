@@ -37,6 +37,8 @@
   "--max-context",
   "262144",
   "--kv",
-  "int8"
+  "int8",
+  "--kv-resident",
+  "20480"
  ]
 }

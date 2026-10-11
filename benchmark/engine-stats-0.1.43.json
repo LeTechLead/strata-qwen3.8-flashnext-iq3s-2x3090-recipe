@@ -1,0 +1,14 @@
+{
+ "version": "0.1.43",
+ "engine": "0.1.43",
+ "expert_slots": 18415,
+ "expert_cache_mib": 36248,
+ "arena_mib": 47962,
+ "pcie_frac": "0.36",
+ "spec": 6,
+ "pool_workers": 5,
+ "max_context": 262144,
+ "kv": "int8",
+ "kv_resident": 20480,
+ "vram_free_mib": 457
+}
